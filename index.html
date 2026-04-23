@@ -1910,6 +1910,7 @@ function rSheet(){
                 <div style="font-size:10px;color:var(--text3)">${item.summary||''}</div>
               </div>
               <div style="display:flex;gap:4px;flex-shrink:0">
+                ${item.kind==='weapon'?`<button data-inv-equip-weapon="${idx}" style="font-family:Cinzel,serif;font-size:8px;letter-spacing:.07em;padding:2px 8px;border-radius:20px;border:1px solid var(--gold3);background:none;color:var(--gold2);cursor:pointer">→ Weapons</button>`:''}
                 ${item.kind==='armor'?`<button data-inv-equip-armor="${idx}" style="font-family:Cinzel,serif;font-size:8px;letter-spacing:.07em;padding:2px 8px;border-radius:20px;border:1px solid var(--teal);background:none;color:var(--teal2);cursor:pointer">Equip</button>`:''}
                 <button data-inv-remove="${idx}" style="font-family:Cinzel,serif;font-size:8px;letter-spacing:.07em;padding:2px 8px;border-radius:20px;border:1px solid var(--red);background:none;color:var(--red);cursor:pointer">✕</button>
               </div>
@@ -2055,6 +2056,38 @@ function rSheet(){
     });
   });
   // Inventory remove buttons
+  sheetEl.querySelectorAll('[data-inv-equip-weapon]').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      const c=gA();if(!c)return;
+      const idx=parseInt(btn.dataset.invEquipWeapon);
+      const item=c.inventory[idx];
+      if(!item||item.kind!=='weapon')return;
+      // Build a weapon entry from the inventory item's data
+      const d=item.data||{};
+      const weaponEntry={
+        name: item.name,
+        trait: d.trait||'Agility',
+        dmg:   d.dmg||'d8 phy',
+        range: d.range||'Melee',
+        burden:d.burden||'One-Handed',
+        feat:  d.feat||'',
+        t:     d.t||1,
+        slot:  d.slot||'primary',
+        isHomebrew: d.isHomebrew||false,
+        catalogSlot: d.catalogSlot||undefined
+      };
+      if(!c.weapons)c.weapons=[];
+      // Duplicate check by name
+      if(c.weapons.some(w=>w.name===weaponEntry.name)){
+        showToast('"'+weaponEntry.name+'" is already in your weapon list.');return;
+      }
+      c.weapons.push(weaponEntry);
+      invRemove(c,idx);
+      saveAll(chars);rSheet();
+      showToast(weaponEntry.name+' moved to All Weapons.');
+    });
+  });
   sheetEl.querySelectorAll('[data-inv-remove]').forEach(btn=>{
     btn.addEventListener('click',e=>{
       e.stopPropagation();
