@@ -1744,6 +1744,46 @@ function rSheet(){
       html+='</div>';
       return html;
     })()}
+    ${(()=>{
+      // Only show panel if any content exists
+      const hasClass=!!c.selectedClass;
+      const hasSub=!!c.selectedSubclass;
+      const hasExp=c.experiences&&c.experiences.some(e=>e.name);
+      const hasBg=!!(c.background&&c.background.trim());
+      if(!hasClass&&!hasSub&&!hasExp&&!hasBg)return '';
+      return `<div style="margin-top:.6rem;border:1px solid var(--border);border-radius:var(--r);background:var(--bg2);overflow:hidden">
+        <button onclick="toggleHeritageFeat('classTraitsPanel')" style="width:100%;background:none;border:none;padding:.5rem .75rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;color:var(--text2);font-family:Cinzel,serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase">
+          <span>Class &amp; Traits</span>
+          <span style="color:var(--text3);font-family:'Crimson Pro',serif;font-size:10px;letter-spacing:0;text-transform:none">tap to expand ▾</span>
+        </button>
+        <div id="hf_classTraitsPanel" style="display:none;padding:.6rem .75rem .75rem;border-top:1px solid var(--border);background:var(--bg)">
+      ${(()=>{
+        if(!c.selectedClass||!CLASS_FEATURES[c.selectedClass])return '';
+        const cf=CLASS_FEATURES[c.selectedClass];
+        function classBadge(f,colorVar,idPrefix){
+          const safeId=(idPrefix+'_'+f.name).replace(/[^a-zA-Z0-9_]/g,'_');
+          return `<span class="bdg bg2" style="cursor:pointer;border-color:${colorVar};margin-right:4px" onclick="toggleHeritageFeat('${safeId}')">${f.name}</span><div id="hf_${safeId}" style="display:none;margin:4px 0 6px 0;padding:.5rem .65rem;background:var(--bg3);border-left:2px solid ${colorVar};border-radius:0 var(--r) var(--r) 0;font-size:11px;color:var(--text2);line-height:1.6">${f.text}</div>`;
+        }
+        let html=`<div class="st">Class Features — ${c.selectedClass}</div><div style="margin-bottom:.5rem">`;
+        html+=`<div style="font-size:10px;font-family:Cinzel,serif;letter-spacing:.08em;text-transform:uppercase;color:var(--gold3);margin-bottom:4px">Hope Feature</div>`;
+        html+=classBadge(cf.hope,'var(--gold)','hope_'+c.selectedClass);
+        html+=`<div style="font-size:10px;font-family:Cinzel,serif;letter-spacing:.08em;text-transform:uppercase;color:var(--teal2);margin-top:.5rem;margin-bottom:4px">Class Feature${cf.features.length>1?'s':''}</div>`;
+        cf.features.forEach(f=>{ html+=classBadge(f,'var(--teal2)','cls_'+c.selectedClass); });
+        html+='</div>';
+        return html;
+      })()}
+      ${c.selectedSubclass?`<div class="st">Subclass — ${c.selectedSubclass}</div>${scB}<div style="margin-top:.35rem"><button class="btn bgh" onclick="showTab('builder')">View full features →</button></div>`:''}
+
+      <div class="st">Experiences</div>
+      <div style="padding:.18rem 0">${eb}</div>
+
+      <div class="st">Background</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.6">${c.background||'<em style="color:var(--text3)">No background written.</em>'}</div>
+
+
+        </div>
+      </div>`;
+    })()}
   </div>
 
   <div class="s2">
@@ -1804,45 +1844,6 @@ function rSheet(){
       </div>
       ${armorStats.name?`<div style="font-size:10px;color:var(--text3);margin-top:.25rem">Thresholds from: <em style="color:var(--gold3)">${armorStats.name}</em></div>`:`<div style="font-size:10px;color:var(--text3);margin-top:.25rem">Using base thresholds (no armor equipped)</div>`}
 
-      ${(()=>{
-        if(!c.selectedClass||!CLASS_FEATURES[c.selectedClass])return '';
-        const cf=CLASS_FEATURES[c.selectedClass];
-        function classBadge(f,colorVar,idPrefix){
-          const safeId=(idPrefix+'_'+f.name).replace(/[^a-zA-Z0-9_]/g,'_');
-          return `<span class="bdg bg2" style="cursor:pointer;border-color:${colorVar};margin-right:4px" onclick="toggleHeritageFeat('${safeId}')">${f.name}</span><div id="hf_${safeId}" style="display:none;margin:4px 0 6px 0;padding:.5rem .65rem;background:var(--bg3);border-left:2px solid ${colorVar};border-radius:0 var(--r) var(--r) 0;font-size:11px;color:var(--text2);line-height:1.6">${f.text}</div>`;
-        }
-        let html=`<div class="st">Class Features — ${c.selectedClass}</div><div style="margin-bottom:.5rem">`;
-        html+=`<div style="font-size:10px;font-family:Cinzel,serif;letter-spacing:.08em;text-transform:uppercase;color:var(--gold3);margin-bottom:4px">Hope Feature</div>`;
-        html+=classBadge(cf.hope,'var(--gold)','hope_'+c.selectedClass);
-        html+=`<div style="font-size:10px;font-family:Cinzel,serif;letter-spacing:.08em;text-transform:uppercase;color:var(--teal2);margin-top:.5rem;margin-bottom:4px">Class Feature${cf.features.length>1?'s':''}</div>`;
-        cf.features.forEach(f=>{ html+=classBadge(f,'var(--teal2)','cls_'+c.selectedClass); });
-        html+='</div>';
-        return html;
-      })()}
-      ${c.selectedSubclass?`<div class="st">Subclass — ${c.selectedSubclass}</div>${scB}<div style="margin-top:.35rem"><button class="btn bgh" onclick="showTab('builder')">View full features →</button></div>`:''}
-
-      <div class="st">Experiences</div>
-      <div style="padding:.18rem 0">${eb}</div>
-
-      <div class="st">Active Weapons</div>
-      <div style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:.5rem">
-        ${wStatBox('Primary','equippedPrimary' in c?c.equippedPrimary:null,'var(--gold3)')}
-        ${wStatBox('Secondary','equippedSecondary' in c?c.equippedSecondary:null,'var(--teal)')}
-      </div>
-
-      <div class="st">All Weapons <span style="font-family:Crimson Pro,serif;font-weight:300;font-size:11px;color:var(--text3)">(click to equip)</span></div>
-      <div class="card" style="overflow:auto">
-        <table style="width:100%;border-collapse:collapse">
-          <thead><tr>${['Name','Trait','Damage','Range','Equip'].map(h=>`<th style="text-align:left;font-size:9px;font-family:Cinzel,serif;letter-spacing:.1em;color:var(--text3);padding-bottom:5px">${h}</th>`).join('')}</tr></thead>
-          <tbody id="weapTableBody">${wrRows||'<tr><td colspan="5" style="color:var(--text3);font-size:11px;padding:5px 0">No weapons</td></tr>'}</tbody>
-        </table>
-      </div>
-
-      <div class="st">Background</div>
-      <div style="font-size:12px;color:var(--text2);line-height:1.6">${c.background||'<em style="color:var(--text3)">No background written.</em>'}</div>
-    </div>
-
-    <div>
       <div class="st">Hit Points <span style="font-weight:300;color:var(--text3);font-family:Crimson Pro,serif;font-size:11px">(click to mark)</span></div>
       <div class="card"><div class="rl"><span>Slots: ${c.hpSlots}</span><span style="color:var(--red)">${c.hpFilled} marked</span></div>${mkS(c.hpSlots,c.hpFilled,'hs','tHP')}</div>
 
@@ -1864,6 +1865,23 @@ function rSheet(){
         </div>
         <div class="rl"><span>Slots: ${armorStats.score}</span><span style="color:#8070b0">${c.armorFilled} spent</span></div>
         ${mkS(armorStats.score,c.armorFilled,'as','tAR')}
+      </div>
+
+    </div>
+
+    <div>
+      <div class="st">Active Weapons</div>
+      <div style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:.5rem">
+        ${wStatBox('Primary','equippedPrimary' in c?c.equippedPrimary:null,'var(--gold3)')}
+        ${wStatBox('Secondary','equippedSecondary' in c?c.equippedSecondary:null,'var(--teal)')}
+      </div>
+
+      <div class="st">All Weapons <span style="font-family:Crimson Pro,serif;font-weight:300;font-size:11px;color:var(--text3)">(click to equip)</span></div>
+      <div class="card" style="overflow:auto">
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr>${['Name','Trait','Damage','Range','Equip'].map(h=>`<th style="text-align:left;font-size:9px;font-family:Cinzel,serif;letter-spacing:.1em;color:var(--text3);padding-bottom:5px">${h}</th>`).join('')}</tr></thead>
+          <tbody id="weapTableBody">${wrRows||'<tr><td colspan="5" style="color:var(--text3);font-size:11px;padding:5px 0">No weapons</td></tr>'}</tbody>
+        </table>
       </div>
 
       <div class="st">Domain Loadout <span style="font-weight:300;color:var(--text3);font-family:Crimson Pro,serif;font-size:11px">${c.loadout.length}/5</span></div>
@@ -1919,8 +1937,7 @@ function rSheet(){
         })()}
       </div>
     </div>
-  </div>
-  <hr class="dv">
+  </div>  <hr class="dv">
   <div class="st">Homebrew Creator</div>
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.8rem;margin-bottom:1rem">
     <div class="tabs" style="margin-bottom:.8rem;border-bottom:1px solid var(--border)">
