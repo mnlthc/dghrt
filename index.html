@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0e0c0a;--bg2:#161310;--bg3:#1e1a16;--bg4:#26211b;--border:#3d3328;--border2:#524639;--gold:#c8a96e;--gold2:#e8c98a;--gold3:#a07840;--ember:#d4603a;--teal:#4a9e8a;--teal2:#6abca8;--muted:#8a7a68;--text:#e8ddd0;--text2:#b8a898;--text3:#887868;--red:#c05050;--r:6px;--r2:10px}
+:root{--bg:#f5f0e8;--bg2:#ede6d6;--bg3:#e4dbc8;--bg4:#d8cfb8;--border:#c4b89a;--border2:#a89878;--gold:#8a6020;--gold2:#6a4810;--gold3:#a87830;--ember:#b84020;--teal:#1a6858;--teal2:#2a8870;--muted:#7a6a58;--text:#1e1810;--text2:#3a2e20;--text3:#6a5a48;--red:#a02828;--r:6px;--r2:10px}
 /* ── THEMES ── */
 [data-theme="obsidian"]{--bg:#07080a;--bg2:#0e1014;--bg3:#141820;--bg4:#1c2230;--border:#2a3040;--border2:#3a4458;--gold:#7a9fd4;--gold2:#a8c4e8;--gold3:#5070a0;--ember:#5080d0;--teal:#508090;--teal2:#70a8b8;--muted:#607080;--text:#d0dce8;--text2:#90a8c0;--text3:#607080;--red:#c05060}
 [data-theme="forest"]{--bg:#080c07;--bg2:#0f140d;--bg3:#161e12;--bg4:#1e2818;--border:#2e3e26;--border2:#3e5434;--gold:#7db85a;--gold2:#a0d478;--gold3:#5a8840;--ember:#d4a03a;--teal:#3a9870;--teal2:#58b888;--muted:#708060;--text:#d4e4c8;--text2:#9ab888;--text3:#6a8858;--red:#c05040}
@@ -40,11 +40,11 @@ body{font-family:'Crimson Pro',Georgia,serif;background:var(--bg);color:var(--te
 .ci:hover .ci-del{opacity:1}
 .sb-new{width:100%;padding:.5rem .55rem;background:none;border:1px dashed var(--border2);border-radius:var(--r);color:var(--muted);font-family:'Crimson Pro',serif;font-size:15px;cursor:pointer;transition:all .15s;text-align:left}
 .sb-new:hover{border-color:var(--gold3);color:var(--gold);background:var(--bg3)}
-.main{padding:1.4rem;overflow-y:auto}
+.main{padding:1.4rem;overflow-y:auto}.sheet-wrap{padding:0}
 .tabs{display:flex;gap:2px;margin-bottom:1.4rem;border-bottom:1px solid var(--border)}
 .tb{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.1em;padding:.5rem .9rem;background:none;border:none;border-bottom:3px solid transparent;color:var(--text3);cursor:pointer;transition:all .15s;text-transform:uppercase}
 .tb:hover{color:var(--text2);background:var(--bg3)}.tb.active{color:var(--bg);background:var(--gold);border-bottom:3px solid var(--gold3);font-weight:600}
-.tp{display:none}.tp.active{display:block}
+.tp{display:none}.tp.active{display:block;width:100%}
 .st{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold3);margin:1.6rem 0 .6rem;padding-bottom:.35rem;border-bottom:1px solid var(--border)}
 .st:first-child{margin-top:0}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
@@ -79,7 +79,7 @@ textarea{resize:vertical;min-height:75px;line-height:1.5}
 .sp{padding:2px 8px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid var(--border2);color:var(--text2);background:var(--bg3)}
 .sp.used{text-decoration:line-through;color:var(--text3);background:var(--bg2);border-color:var(--border)}
 .slots{display:flex;gap:4px;flex-wrap:wrap}
-.slot{width:27px;height:27px;border:1px solid var(--border2);border-radius:4px;cursor:pointer;transition:all .12s;background:var(--bg2)}
+.slot{width:32px;height:32px;border:1px solid var(--border2);border-radius:4px;cursor:pointer;transition:all .12s;background:var(--bg2)}
 .slot:hover{border-color:var(--gold3)}
 .hs.on{background:#c05050;border-color:#d06060}.ss.on{background:#c07830;border-color:#d08840}
 .hos.on{background:#4a9e8a;border-color:#5aaea0}.as.on{background:#7060a0;border-color:#8070b0}
@@ -281,7 +281,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
    SHEET LAYOUT v2 — sidebar + main
    ═══════════════════════════════════════════════════════════════ */
 /* Sidebar + main two-column layout */
-.sl-layout{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.1rem;align-items:start}
+.sl-layout{display:grid;grid-template-columns:1fr;gap:1.25rem;margin-bottom:1.1rem;align-items:start}
 .sl-col{min-width:0}
 .sl-sidebar-label{margin-bottom:.4rem}
 .sl-traits{}
@@ -305,7 +305,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 .vcv{font-size:22px;font-weight:300;color:var(--gold2);line-height:1;margin-bottom:3px}
 .vcs{font-size:13px;color:var(--text3);font-weight:300}
 .vcpips .slots{display:flex;flex-wrap:wrap;gap:2px;justify-content:center}
-.vcpips .slot{width:11px;height:11px}
+.vcpips .slot{width:15px;height:15px}
 /* Active weapons */
 .sl-active-weapons .st{font-size:11px;margin-bottom:.2rem}
 /* Tab groups */
@@ -322,11 +322,63 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 @media(max-width:780px){
   .sl-layout{grid-template-columns:1fr;gap:.75rem}
   .sl-col{width:100%}
-  .sl-sidebar{}
-  .sl-traits{grid-template-columns:repeat(3,1fr)}
+  .top-strip{flex-wrap:wrap}
+  .trait-chips{display:grid!important;grid-template-columns:repeat(3,1fr);gap:.3rem}
+  .traits-inline{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
 
 }
 
+
+/* ── TOP STRIP ────────────────────────────────────────────── */
+.top-strip{display:flex;justify-content:center;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.top-strip-inner{display:flex;flex-direction:column;gap:.6rem;align-items:center;width:100%}
+.top-strip-row{display:flex;gap:.5rem;justify-content:center;width:100%}
+.trait-chips{display:none}
+/* Traits area: ev+arm strip + 6 trait cols */
+.traits-wrapper{display:flex;align-items:stretch;gap:.75rem;margin:.5rem 0 .65rem;border-bottom:1px solid var(--border);padding-bottom:.65rem}
+.ev-arm-row{display:flex;flex-direction:row;gap:.6rem;flex-shrink:0;align-items:stretch}
+.ev-arm-chip{padding:.45rem .6rem;text-align:center;min-width:80px;cursor:default;flex:1}
+.traits-area{display:flex;flex:1;min-width:0}
+.traits-inline{display:flex;flex:1;gap:0}
+.ti-col{display:flex;flex-direction:row;align-items:center;gap:.3rem;flex:1;min-width:0;padding:0 .4rem;border-right:1px solid var(--gold3)}
+.ti-col:last-child{border-right:none}
+.ti-btns{display:flex;flex-direction:column;gap:3px;flex-shrink:0}
+.ti-info{display:flex;flex-direction:column;align-items:center;flex:1;min-width:0}
+.ti-name{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.07em;color:var(--text3);text-transform:uppercase;text-align:center}
+.ti-val{font-size:21px;font-weight:300;color:var(--gold2);line-height:1;text-align:center}
+.ti-dice{font-size:9px;color:var(--text3);font-style:italic;text-align:center}
+@media(max-width:780px){
+  .traits-wrapper{flex-direction:column;gap:.4rem}
+  .ev-arm-row{flex-direction:row;justify-content:center}
+  .traits-inline{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem}
+  .ti-col{padding:.3rem .4rem}
+  .ti-col:nth-child(3n){border-right:none}
+}
+.tc-chip{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:.45rem .5rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;flex:1}
+.tc-chip--stat{min-width:80px;max-width:110px}
+.tc-name{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)}
+.tc-val{font-size:22px;font-weight:300;color:var(--gold2);line-height:1}
+.tc-mod{font-size:11px;color:var(--text2);line-height:1}
+.tc-dice{font-size:9px;color:var(--text3);font-style:italic}
+.tc-btns{display:flex;gap:3px;margin-top:2px}
+.tc-pips .slots{display:flex;flex-wrap:wrap;gap:2px;justify-content:center}
+.tc-pips .slot{width:15px;height:15px}
+/* ── SHEET WRAP (centered container) ──────────────────────── */
+#sheetContent{padding:0}
+.sheet-wrap .hdr-info{padding:1rem 0 .75rem}
+
+.thresh-display{display:flex;justify-content:center;padding:.4rem 0}
+.thresh-row{display:flex;align-items:center;gap:.5rem;justify-content:center}
+.thresh-col{display:flex;flex-direction:column;align-items:center;gap:2px}
+.thresh-num-col{display:flex;flex-direction:column;align-items:center;gap:2px;padding:0 .4rem}
+.thresh-label{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.thresh-val{font-size:26px;font-weight:300;line-height:1}
+.thresh-sub{font-size:13px;color:var(--text3);font-style:italic;text-align:center;white-space:nowrap}
+.dual-tabs-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+@media(max-width:780px){.dual-tabs-row{grid-template-columns:1fr}.bottom-row{grid-template-columns:1fr}}
+.content-wrap{max-width:1100px;margin:0 auto}
+.bottom-notes{padding:.8rem .9rem}
 </style>
 </head>
 <body>
@@ -371,6 +423,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
         <button class="btn bo" onclick="triggerImport()">⬆ Import</button>
         <button class="btn bo" onclick="showStandaloneRef()">📖 Browse Reference</button>
       </div>
+      <div style="text-align:center;padding:.6rem 1rem;font-size:13px;color:var(--text3);border-top:1px solid var(--border);margin-top:1.5rem;font-family:'Crimson Pro',serif;line-height:1.6">All information contained is based on the official <a href="https://www.daggerheart.com/srd/" target="_blank" style="color:var(--gold3);text-decoration:none">SRD document</a>. For the official Daggerheart site, visit <a href="http://daggerheart.com" target="_blank" style="color:var(--gold3);text-decoration:none">daggerheart.com</a>.</div>
     </div>
     <div id="standaloneRef" style="display:none;padding:1.5rem">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
@@ -378,6 +431,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
         <button class="btn bgh" onclick="document.getElementById('standaloneRef').style.display='none';document.getElementById('emptyState').style.display='block'">← Back</button>
       </div>
       <div id="standaloneRefContent"></div>
+      <div style="text-align:center;padding:.6rem 1rem;font-size:13px;color:var(--text3);border-top:1px solid var(--border);margin-top:1.5rem;font-family:'Crimson Pro',serif;line-height:1.6">All information contained is based on the official <a href="https://www.daggerheart.com/srd/" target="_blank" style="color:var(--gold3);text-decoration:none">SRD document</a>. For the official Daggerheart site, visit <a href="http://daggerheart.com" target="_blank" style="color:var(--gold3);text-decoration:none">daggerheart.com</a>.</div>
     </div>
     <div id="editorArea" style="display:none">
       <div class="tabs">
@@ -389,7 +443,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
         <button class="tb" onclick="showTab('reference')">Reference</button>
       </div>
       <!-- BUILDER TAB -->
-      <div class="tp active" id="tab-builder">
+      <div class="tp active" id="tab-builder"><div class="content-wrap">
         <div class="st">Identity</div>
         <div class="g2">
           <div class="fld"><label class="fl">Character Name</label><input type="text" id="charName" placeholder="Your hero's name" oninput="fu('name',this.value)"></div>
@@ -482,23 +536,23 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
           <button class="btn bg" onclick="saveChar();showTab('sheet')">Save &amp; View Sheet →</button>
           <button class="btn bo" onclick="saveChar()">Save</button>
         </div>
-      </div>
+      </div></div>
       <!-- SHEET TAB -->
-      <div class="tp" id="tab-sheet"><div id="sheetContent"></div></div>
+      <div class="tp" id="tab-sheet"><div class="content-wrap"><div id="sheetContent"></div></div></div>
       <!-- DOMAINS TAB -->
-      <div class="tp" id="tab-domains">
+      <div class="tp" id="tab-domains"><div class="content-wrap">
         <div class="db">
           <div id="lBar"></div>
           <div class="df" id="dFilters"></div>
           <div class="dcg" id="dcGrid"></div>
         </div>
-      </div>
+      </div></div>
       <!-- LEVEL UP TAB -->
-      <div class="tp" id="tab-levelup"><div id="lvlupContent"></div></div>
+      <div class="tp" id="tab-levelup"><div class="content-wrap"><div id="lvlupContent"></div></div></div>
       <!-- NOTES TAB -->
-      <div class="tp" id="tab-notes"><div id="notesContent"></div></div>
+      <div class="tp" id="tab-notes"><div class="content-wrap"><div id="notesContent"></div></div></div>
       <!-- REFERENCE TAB -->
-      <div class="tp" id="tab-reference"><div id="refContent"></div></div>
+      <div class="tp" id="tab-reference"><div class="content-wrap"><div id="refContent"></div></div></div>
     </div>
   </main>
 </div>
@@ -1814,17 +1868,117 @@ function rSheet(){
   const vH=c.vault.length===0?'':c.vault.map(name=>{const card=gcbn(name);if(!card)return'';return`<div style="font-size:13px;color:var(--text3);padding:2px 0">${card.name} (${card.domain} Lv${card.level})</div>`;}).join('');
 
   document.getElementById('sheetContent').innerHTML=`
+  <div class="sheet-wrap">
   <div style="margin-bottom:1.1rem">
     <div class="shn">${c.name||'Unnamed Hero'}</div>
     <div class="shm">${c.pronouns?'('+c.pronouns+') ':''}${c.selectedClass||'No class'}${c.selectedSubclass?' · '+c.selectedSubclass:''} · Level ${lv} · Prof +${c.proficiency}</div>
-    <div class="sl-tabs-wrap" style="margin-top:.65rem">
+    <div class="traits-wrapper">
+    <div class="ev-arm-row">
+      <div class="ev-arm-chip card">
+        <div class="tc-name">Evasion</div>
+        <div class="tc-val" id="sheetEvDisp">${effEv}</div>
+        <div style="font-size:11px;color:var(--text3)">${armorStats.evMod?`+${armorStats.evMod} armor`:''}</div>
+        <div class="ti-btns" style="flex-direction:row;gap:4px;margin-top:3px;justify-content:center">
+          <button class="tbtn" onclick="sheetChStat('evasionBase',-1)">−</button>
+          <button class="tbtn" onclick="sheetChStat('evasionBase',1)">+</button>
+        </div>
+      </div>
+      <div class="ev-arm-chip card sc-feat-badge" data-feature="${(()=>{if(!armorStats.name&&!c.armorName)return hcp({name:'No Armor',tier:'',text:'No armor currently equipped.',list:[]});const nm=armorStats.name||c.armorName;const lv3=parseInt(c.level)||1;const list=[];const a=ARMOR_DB.find(x=>x.n===nm)||(c.homebrewArmors||[]).find(x=>x.n===nm);if(a){list.push({label:`Base (level ${lv3}): ${lv3} / ${lv3*2}`});list.push({label:`Armor bonus: +${a.minor} / +${a.severe}`});list.push({label:`Total: ${armorStats.minor} / ${armorStats.severe}`});}else{list.push({label:`Major: ${armorStats.minor}`});list.push({label:`Severe: ${armorStats.severe}`});}list.push({label:`Score: ${armorStats.score}`});if(armorStats.feat)list.push({label:`Feature: ${armorStats.feat}`});if(armorStats.evMod)list.push({label:`Evasion: ${armorStats.evMod>0?'+':''}${armorStats.evMod}`});return hcp({name:nm||'Armor',tier:'Armor',text:'',list});})()}">
+        <div class="tc-name">Armor${armorStats.name?`<button data-unequip-armor="1" style="font-family:Cinzel,serif;font-size:9px;padding:1px 5px;border-radius:20px;border:1px solid var(--red);background:none;color:var(--red);cursor:pointer;margin-left:3px">✕</button>`:''}</div>
+        <div class="tc-val">${armorStats.score-c.armorFilled}<span style="font-size:13px;color:var(--text3)">/${armorStats.score}</span></div>
+        <div style="font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px">${armorStats.name||'Unequipped'}</div>
+        <div class="tc-pips" style="margin-top:3px">${mkS(armorStats.score,c.armorFilled,'as','tAR')}</div>
+      </div>
+    </div>
+
+    <div class="traits-area">
+      <div class="traits-inline">
+        ${TRAITS_LIST.map(t=>`
+          <div class="ti-col">
+            <div class="ti-btns">
+              <button class="tbtn" onclick="sheetChT('${t}',1)">+</button>
+              <button class="tbtn" onclick="sheetChT('${t}',-1)">−</button>
+            </div>
+            <div class="ti-info">
+              <span class="ti-name">${t}</span>
+              <span class="ti-val">${c.traits[t]}</span>
+              <span class="ti-dice">2d12${tm(t).startsWith('-')?'':'+ '}${t.slice(0,3)}</span>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+    </div><!-- /traits-wrapper -->
+  </div>
+
+
+  <!-- TOP STRIP: Thresholds + Vitals -->
+  <div class="top-strip">
+    <div class="top-strip-inner">
+      <!-- Thresholds row -->
+      <div class="top-strip-row">
+        <div class="thresh-display">
+          <div class="thresh-row">
+            <div class="thresh-col">
+              <div class="thresh-label">Minor</div>
+              <div class="thresh-sub">Mark 1 HP</div>
+            </div>
+            <div class="thresh-num-col">
+              <div class="thresh-val" id="sheetThreshMinor">${armorStats.minor}</div>
+              <div style="display:flex;justify-content:center;gap:3px">
+                <button class="tbtn" onclick="sheetChThresh('minor',-1)">−</button>
+                <button class="tbtn" onclick="sheetChThresh('minor',1)">+</button>
+              </div>
+            </div>
+            <div class="thresh-col">
+              <div class="thresh-label" style="color:#d06060">Major</div>
+              <div class="thresh-sub">Mark 2 HP</div>
+            </div>
+            <div class="thresh-num-col">
+              <div class="thresh-val" id="sheetThreshSevere" style="color:var(--red)">${armorStats.severe}</div>
+              <div style="display:flex;justify-content:center;gap:3px">
+                <button class="tbtn" onclick="sheetChThresh('severe',-1)">−</button>
+                <button class="tbtn" onclick="sheetChThresh('severe',1)">+</button>
+              </div>
+            </div>
+            <div class="thresh-col">
+              <div class="thresh-label" style="color:var(--red)">Severe</div>
+              <div class="thresh-sub">Mark 3 HP</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Vitals row -->
+      <div class="top-strip-row">
+        <div class="vcard tc-chip">
+          <div class="tc-name">HP</div>
+          <div class="tc-val">${c.hpSlots-c.hpFilled}<span style="font-size:13px;color:var(--text3)">/${c.hpSlots}</span></div>
+          <div class="tc-btns tc-pips">${mkS(c.hpSlots,c.hpFilled,'hs','tHP')}</div>
+        </div>
+        <div class="vcard tc-chip">
+          <div class="tc-name">Stress</div>
+          <div class="tc-val">${c.stressSlots-c.stressFilled}<span style="font-size:13px;color:var(--text3)">/${c.stressSlots}</span></div>
+          <div class="tc-btns tc-pips">${mkS(c.stressSlots,c.stressFilled,'ss','tST')}</div>
+        </div>
+        <div class="vcard tc-chip">
+          <div class="tc-name">Hope</div>
+          <div class="tc-val">${6-c.hopeFilled}<span style="font-size:13px;color:var(--text3)">/6</span></div>
+          <div class="tc-btns tc-pips">${mkS(6,c.hopeFilled,'hos','tHO')}</div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /top-strip -->
+
+  <!-- TWO TAB GROUPS SIDE BY SIDE -->
+  <div class="dual-tabs-row">
+
+    <div class="sl-tabs-wrap">
       <div class="sl-tabs" id="sl-tabs-b">
         <button class="sl-tab active" onclick="slTab('b','ancestry',this)">Ancestry &amp; Community</button>
         <button class="sl-tab" onclick="slTab('b','classinfo',this)">Class &amp; Subclass</button>
-        <button class="sl-tab" onclick="slTab('b','experiences',this)">Experiences</button>
       </div>
-      <div class="sl-panes" style="padding:.6rem .75rem">
+      <div class="sl-panes">
         <div class="sl-pane active" data-group="b" data-pane="ancestry">
+
         ${(()=>{
           if(!c.ancestry&&!c.community)return '<div style="color:var(--text3);font-size:13px;font-style:italic">No ancestry or community selected. Configure in the Builder tab.</div>';
           let out="";
@@ -1858,6 +2012,7 @@ function rSheet(){
         })()}
         </div>
         <div class="sl-pane" data-group="b" data-pane="classinfo">
+
       ${(()=>{
         // Render class features, subclass, experiences, background inline
         let out='';
@@ -1888,124 +2043,18 @@ function rSheet(){
         return out||'<div style="color:var(--text3);font-size:13px;font-style:italic;padding:.5rem 0">No class, subclass, experiences, or background set. Configure in the Builder tab.</div>';
       })()}
         </div>
-        <div class="sl-pane" data-group="b" data-pane="experiences">
-        ${(()=>{
-          const eb=c.experiences.filter(e=>e.name).map(e=>`<span class="bdg bg2" style="margin-right:4px;margin-bottom:4px">${e.name} <strong style="color:var(--gold2)">${e.mod}</strong></span>`).join("");
-          const hasBg=!!(c.background&&c.background.trim());
-          let out='<div class="st">Experiences</div><div style="margin-bottom:.75rem">'+(eb||'<span style="color:var(--text3);font-size:13px;font-style:italic">None set</span>')+'</div>';
-          if(hasBg)out+=`<div class="st">Background</div><div style="font-size:14px;color:var(--text2);line-height:1.55;font-style:italic">${c.background.replace(/\n/g,"<br>")}</div>`;
-          return out;
-        })()}
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="sl-layout">
-
-    <!-- Column 1: Traits -->
-    <div class="sl-col">
-      <div class="st sl-sidebar-label">Traits</div>
-      <div class="sl-traits">
-      <div class="g3">${TRAITS_LIST.map(t=>`
-        <div class="card csm" style="text-align:center">
-          <div class="tn">${t}</div>
-          <div class="tv">${c.traits[t]}</div>
-          <div class="tm">${tm(t)}</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:2px;font-style:italic;letter-spacing:.01em">2d12 ${tm(t).startsWith('-')?'':'+'} ${t.slice(0,3)}</div>
-          <div class="tbs" style="display:flex;justify-content:center;gap:4px;margin-top:4px">
-            <button class="tbtn" onclick="sheetChT('${t}',-1)">−</button>
-            <button class="tbtn" onclick="sheetChT('${t}',1)">+</button>
-          </div>
-        </div>`).join('')}</div>
       </div>
     </div>
 
-    <!-- Column 2: Vitals -->
-    <div class="sl-col">
-      <div class="st sl-sidebar-label">Vitals</div>
-      <div class="sl-vitals">
-        <div class="vcard">
-          <div class="vcn">HP</div>
-          <div class="vcv">${c.hpSlots-c.hpFilled}<span class="vcs">/${c.hpSlots}</span></div>
-          <div class="vcpips">${mkS(c.hpSlots,c.hpFilled,'hs','tHP')}</div>
-        </div>
-        <div class="vcard">
-          <div class="vcn">Stress</div>
-          <div class="vcv">${c.stressSlots-c.stressFilled}<span class="vcs">/${c.stressSlots}</span></div>
-          <div class="vcpips">${mkS(c.stressSlots,c.stressFilled,'ss','tST')}</div>
-        </div>
-        <div class="vcard">
-          <div class="vcn">Hope</div>
-          <div class="vcv">${6-c.hopeFilled}<span class="vcs">/6</span></div>
-          <div class="vcpips">${mkS(6,c.hopeFilled,'hos','tHO')}</div>
-        </div>
-        <div class="vcard sc-feat-badge" data-feature="${(()=>{if(!armorStats.name&&!c.armorName)return hcp({name:'No Armor',tier:'',text:'No armor currently equipped.',list:[]});const nm=armorStats.name||c.armorName;const lv3=parseInt(c.level)||1;const list=[];const a=ARMOR_DB.find(x=>x.n===nm)||(c.homebrewArmors||[]).find(x=>x.n===nm);if(a){list.push({label:`Base (level ${lv3}): ${lv3} / ${lv3*2}`});list.push({label:`Armor bonus: +${a.minor} / +${a.severe}`});list.push({label:`Total: ${armorStats.minor} / ${armorStats.severe}`});}else{list.push({label:`Major: ${armorStats.minor}`});list.push({label:`Severe: ${armorStats.severe}`});}list.push({label:`Score: ${armorStats.score}`});if(armorStats.feat)list.push({label:`Feature: ${armorStats.feat}`});if(armorStats.evMod)list.push({label:`Evasion: ${armorStats.evMod>0?'+':''}${armorStats.evMod}`});return hcp({name:nm||'Armor',tier:'Armor',text:'',list});})()}">
-          <div class="vcn">Armor${armorStats.name?`<button data-unequip-armor="1" style="font-family:Cinzel,serif;font-size:9px;padding:1px 5px;border-radius:20px;border:1px solid var(--red);background:none;color:var(--red);cursor:pointer;margin-left:4px">✕</button>`:''}</div>
-          <div class="vcv">${armorStats.score-c.armorFilled}<span class="vcs">/${armorStats.score}</span></div>
-          <div class="vcpips">${mkS(armorStats.score,c.armorFilled,'as','tAR')}</div>
-          ${armorStats.name?`<div style="font-size:10px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${armorStats.name}</div>`:''}
-        </div>
+    <div class="sl-tabs-wrap">
+      <div class="sl-tabs" id="sl-tabs-a">
+        <button class="sl-tab active" onclick="slTab('a','weapons',this)">Weapons</button>
+        <button class="sl-tab" onclick="slTab('a','domains',this)">Domain Cards</button>
+        <button class="sl-tab" onclick="slTab('a','inventory',this)">Inventory</button>
       </div>
-    </div>
+      <div class="sl-panes">
+        <div class="sl-pane active" data-group="a" data-pane="weapons">
 
-    <!-- Column 3: Core Stats + Thresholds + Active Weapons -->
-    <div class="sl-col">
-      <div class="st sl-sidebar-label">Core Stats</div>
-      <div class="card" style="margin-bottom:.5rem">
-        <div class="sr">
-          <span class="sl">Evasion</span>
-          <span class="sv" style="display:flex;align-items:center;gap:6px">
-            <button class="tbtn" onclick="sheetChStat('evasionBase',-1)">−</button>
-            <span id="sheetEvDisp">${effEv}</span>
-            <button class="tbtn" onclick="sheetChStat('evasionBase',1)">+</button>
-            ${armorStats.evMod?`<span style="font-size:12px;color:var(--text3)">(+${armorStats.evMod} armor)</span>`:''}
-          </span>
-        </div>
-        <div class="sr">
-          <span class="sl">Proficiency</span>
-          <span class="sv" style="display:flex;align-items:center;gap:6px">
-            <button class="tbtn" onclick="sheetChStat('proficiency',-1)">−</button>
-            <span id="sheetProfDisp">+${c.proficiency}</span>
-            <button class="tbtn" onclick="sheetChStat('proficiency',1)">+</button>
-          </span>
-        </div>
-      </div>
-      <div class="st sl-sidebar-label">Thresholds</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.35rem;margin-bottom:.4rem">
-        <div class="vcard" style="border-color:#c0505044">
-          <div class="vcn" style="color:#c07070">Major</div>
-          <div class="vcv" style="font-size:24px">${armorStats.minor}</div>
-          <div style="display:flex;justify-content:center;gap:3px;margin-top:2px">
-            <button class="tbtn" onclick="sheetChThresh('minor',-1)">−</button>
-            <button class="tbtn" onclick="sheetChThresh('minor',1)">+</button>
-          </div>
-          <div style="font-size:10px;color:var(--text3);margin-top:2px">marks 1 HP</div>
-        </div>
-        <div class="vcard" style="border-color:#c0505088">
-          <div class="vcn" style="color:var(--red)">Severe</div>
-          <div class="vcv" style="font-size:24px;color:var(--red)">${armorStats.severe}</div>
-          <div style="display:flex;justify-content:center;gap:3px;margin-top:2px">
-            <button class="tbtn" onclick="sheetChThresh('severe',-1)">−</button>
-            <button class="tbtn" onclick="sheetChThresh('severe',1)">+</button>
-          </div>
-          <div style="font-size:10px;color:var(--text3);margin-top:2px">marks 2+ HP</div>
-        </div>
-      </div>
-      ${armorStats.name?`<div style="font-size:11px;color:var(--text3)">From: <em style="color:var(--gold3)">${armorStats.name}</em></div>`:`<div style="font-size:11px;color:var(--text3)">No armor equipped</div>`}
-    </div>
-
-  </div><!-- /sl-layout -->
-
-  <div class="sl-tabs-wrap">
-    <div class="sl-tabs" id="sl-tabs-a">
-      <button class="sl-tab active" onclick="slTab('a','weapons',this)">Weapons</button>
-      <button class="sl-tab" onclick="slTab('a','domains',this)">Domain Cards</button>
-      <button class="sl-tab" onclick="slTab('a','inventory',this)">Inventory</button>
-      <button class="sl-tab" onclick="slTab('a','notes',this)">Notes</button>
-    </div>
-    <div class="sl-panes">
-      <div class="sl-pane active" data-group="a" data-pane="weapons">
       <div class="st">All Weapons <span style="font-family:Crimson Pro,serif;font-weight:300;font-size:13px;color:var(--text3)">(click to equip)</span></div>
       <div class="card" style="overflow:auto">
         <table style="width:100%;border-collapse:collapse">
@@ -2013,9 +2062,9 @@ function rSheet(){
           <tbody id="weapTableBody">${wrRows||'<tr><td colspan="5" style="color:var(--text3);font-size:13px;padding:5px 0">No weapons</td></tr>'}</tbody>
         </table>
       </div>
-      </div>
+        </div>
+        <div class="sl-pane" data-group="a" data-pane="domains">
 
-      <div class="sl-pane" data-group="a" data-pane="domains">
       <div class="st">Domain Loadout <span style="font-weight:300;color:var(--text3);font-family:Crimson Pro,serif;font-size:13px">${c.loadout.length}/5</span></div>
       <div class="card">${lH}${vH?`<div style="margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border)"><div style="font-family:Cinzel,serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:.25rem">Vault</div>${vH}</div>`:''}
       <div style="margin-top:.45rem"><button class="btn bgh" onclick="showTab('domains')">Manage →</button></div></div>
@@ -2035,9 +2084,9 @@ function rSheet(){
         }).join('');
         return `<div class="st">Homebrew Domain Cards</div><div style="margin-bottom:.5rem">${hbHtml}</div>`;
       })()}
-      </div>
+        </div>
+        <div class="sl-pane" data-group="a" data-pane="inventory">
 
-      <div class="sl-pane" data-group="a" data-pane="inventory">
       <div class="st">Inventory</div>
       <div style="position:relative;margin-bottom:.5rem">
         <input id="invSearchInput" type="text" placeholder="Search armor, items, consumables… (weapons go to All Weapons)" style="width:100%" autocomplete="off">
@@ -2073,18 +2122,16 @@ function rSheet(){
           }).join('');
         })()}
       </div>
+        </div>
       </div>
+    </div>
 
-      <div class="sl-pane" data-group="a" data-pane="notes">
-      <div class="st">Notes</div>
-      <textarea id="sheetNotesInput" style="width:100%;min-height:120px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text2);padding:.6rem .75rem;font-family:'Crimson Pro',serif;font-size:15px;line-height:1.65;resize:vertical" placeholder="Notes, class features, reminders…">${c.notes||''}</textarea>
-      </div>
+  </div><!-- /dual-tabs-row -->
 
-    </div><!-- /sl-panes a -->
-  </div><!-- /sl-tabs-wrap a -->
-
-<hr class="dv">
-  <div class="st">Homebrew Creator</div>
+  <!-- BOTTOM ROW: Homebrew Creator (left) + Notes (right) -->
+  <div class="bottom-row">
+    <div class="bottom-homebrew">
+      <div class="st">Homebrew Creator</div>
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.8rem;margin-bottom:1rem">
     <div class="tabs" style="margin-bottom:.8rem;border-bottom:1px solid var(--border)">
       <button class="tb active" onclick="switchHomebrewTab('weapon')">Weapon</button>
@@ -2092,8 +2139,6 @@ function rSheet(){
       <button class="tb" onclick="switchHomebrewTab('item')">Item</button>
       <button class="tb" onclick="switchHomebrewTab('domain')">Domain Card</button>
     </div>
-
-    <!-- Weapon Form -->
     <div id="hb-weapon-form" class="hb-form">
       <div class="g2">
         <div class="fld"><label class="fl">Name</label><input type="text" id="hb-weap-name" placeholder="e.g. Voidblade"></div>
@@ -2110,8 +2155,6 @@ function rSheet(){
       <div style="font-size:12px;color:var(--text3);margin:.4rem 0 .6rem">Proficiency multiplies the number of dice automatically. Set the base die and flat modifier only.</div>
       <button class="btn bg" style="width:100%" onclick="createHomebrew('weapon')">Create Weapon</button>
     </div>
-
-    <!-- Armor Form -->
     <div id="hb-armor-form" class="hb-form" style="display:none">
       <div class="g2">
         <div class="fld"><label class="fl">Name</label><input type="text" id="hb-arm-name" placeholder="e.g. Shadowweave Vest"></div>
@@ -2125,8 +2168,6 @@ function rSheet(){
       <div style="font-size:12px;color:var(--text3);margin:.4rem 0 .6rem">Base thresholds shown here; your level is added automatically on the sheet.</div>
       <button class="btn bg" style="width:100%" onclick="createHomebrew('armor')">Create Armor</button>
     </div>
-
-    <!-- Item Form -->
     <div id="hb-item-form" class="hb-form" style="display:none">
       <div class="g2">
         <div class="fld"><label class="fl">Name</label><input type="text" id="hb-item-name" placeholder="e.g. Potion of Speed"></div>
@@ -2135,8 +2176,6 @@ function rSheet(){
       </div>
       <button class="btn bg" style="margin-top:.6rem;width:100%" onclick="createHomebrew('item')">Create Item</button>
     </div>
-
-    <!-- Domain Card Form -->
     <div id="hb-domain-form" class="hb-form" style="display:none">
       <div class="g2">
         <div class="fld"><label class="fl">Name</label><input type="text" id="hb-dom-name" placeholder="e.g. Fireball Nova"></div>
@@ -2150,13 +2189,22 @@ function rSheet(){
       <button class="btn bg" style="margin-top:.6rem;width:100%" onclick="createHomebrew('domain')">Create Domain Card</button>
     </div>
   </div>
+    </div>
+    <div class="bottom-notes">
+
+      <div class="st">Notes</div>
+      <textarea id="sheetNotesInput" style="width:100%;min-height:120px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text2);padding:.6rem .75rem;font-family:'Crimson Pro',serif;font-size:15px;line-height:1.65;resize:vertical" placeholder="Notes, class features, reminders…">${c.notes||''}</textarea>
+    </div>
+  </div><!-- /bottom-row -->
 
   <hr class="dv">
   <div style="display:flex;gap:7px;flex-wrap:wrap">
     <button class="btn bo" onclick="showTab('builder')">← Builder</button>
     <button class="btn bgh" onclick="clrMarks()">Clear Marks</button>
     <button class="btn bgh" onclick="exportChar()">⬇ Export</button>
-  </div>`;
+  </div>
+  </div><!-- /sheet-wrap -->
+`;
 
   // Wire equip buttons via event delegation
   const tbody = document.getElementById('weapTableBody');
@@ -2653,10 +2701,27 @@ function rLvlUp(){
     <button class="btn bg" onclick="showLvlUpWizard()" ${lv>=10?'disabled style="opacity:.5"':''}>▶ Level Up to ${lv<10?lv+1:'Max'}</button>
   </div>
 
-  <div class="lu-thresh-row">
-    <div class="lu-thresh-card"><div class="lu-thresh-label">Minor Dmg</div><div class="lu-thresh-val">${thresh.minor}</div></div>
-    <div class="lu-thresh-card"><div class="lu-thresh-label">Major Dmg</div><div class="lu-thresh-val">${thresh.major}</div></div>
-    <div class="lu-thresh-card"><div class="lu-thresh-label">Severe Dmg</div><div class="lu-thresh-val">${thresh.severe}</div></div>
+  <div class="thresh-display" style="margin-bottom:.65rem">
+    <div class="thresh-row">
+      <div class="thresh-col">
+        <div class="thresh-label">Minor</div>
+        <div class="thresh-sub">Mark 1 HP</div>
+      </div>
+      <div class="thresh-num-col">
+        <div class="thresh-val">${thresh.minor}</div>
+      </div>
+      <div class="thresh-col">
+        <div class="thresh-label" style="color:#d06060">Major</div>
+        <div class="thresh-sub">Mark 2 HP</div>
+      </div>
+      <div class="thresh-num-col">
+        <div class="thresh-val" style="color:var(--red)">${thresh.severe}</div>
+      </div>
+      <div class="thresh-col">
+        <div class="thresh-label" style="color:var(--red)">Severe</div>
+        <div class="thresh-sub">Mark 3 HP</div>
+      </div>
+    </div>
   </div>
   <div style="font-size:13px;color:var(--text3);margin-bottom:1.25rem">These increase by 1 automatically each time you level up (Step 3).</div>
   `;
@@ -3777,7 +3842,7 @@ function importChar(event){const file=event.target.files[0];if(!file)return;cons
 // THEMES
 // ════════════════════════════════════════════════════════
 const THEMES = [
-  {id:'default',   label:'Parchment',        swatch:'#c8a96e'},
+  {id:'default',   label:'Parchment',        swatch:'#f5f0e8'},
   {id:'obsidian',  label:'Obsidian',          swatch:'#7a9fd4'},
   {id:'forest',    label:'Forest',            swatch:'#7db85a'},
   {id:'crimson',   label:'Crimson',           swatch:'#d47a8a'},
@@ -3862,5 +3927,8 @@ rSb();
 if(activeId&&chars.find(c=>c.id===activeId)){oE();pF(gA());}else cE();
 initThemePicker();
 </script>
+<footer style="text-align:center;padding:.75rem 1rem;font-size:13px;color:var(--text3);border-top:1px solid var(--border);background:var(--bg2);font-family:'Crimson Pro',serif;line-height:1.6">
+  All information contained is based on the official <a href="https://www.daggerheart.com/srd/" target="_blank" style="color:var(--gold3);text-decoration:none">SRD document</a>. For the official Daggerheart site, visit <a href="http://daggerheart.com" target="_blank" style="color:var(--gold3);text-decoration:none">daggerheart.com</a>.
+</footer>
 </body>
 </html>
