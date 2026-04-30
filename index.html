@@ -598,13 +598,13 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
     <div class="es" id="emptyState">
       <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:.5rem;opacity:.7">
         <!-- d12 dodecahedron simplified top-down -->
-        <polygon points="40,4 72,20 72,60 40,76 8,60 8,20" stroke="var(--gold3)" stroke-width="1.5" fill="none"/>
-        <polygon points="40,4 72,20 56,40 24,40 8,20" stroke="var(--gold3)" stroke-width="1" fill="none" opacity=".5"/>
-        <polygon points="24,40 56,40 72,60 40,76 8,60" stroke="var(--gold3)" stroke-width="1" fill="none" opacity=".5"/>
-        <line x1="40" y1="4" x2="40" y2="76" stroke="var(--gold3)" stroke-width=".75" opacity=".3"/>
-        <line x1="8" y1="20" x2="72" y2="60" stroke="var(--gold3)" stroke-width=".75" opacity=".3"/>
-        <line x1="72" y1="20" x2="8" y2="60" stroke="var(--gold3)" stroke-width=".75" opacity=".3"/>
-        <circle cx="40" cy="40" r="3" fill="var(--gold3)" opacity=".6"/>
+        <polygon points="40,4 72,20 72,60 40,76 8,60 8,20" stroke="var(--gold3)" stroke-width="1.5" fill="none"></polygon>
+        <polygon points="40,4 72,20 56,40 24,40 8,20" stroke="var(--gold3)" stroke-width="1" fill="none" opacity=".5"></polygon>
+        <polygon points="24,40 56,40 72,60 40,76 8,60" stroke="var(--gold3)" stroke-width="1" fill="none" opacity=".5"></polygon>
+        <line x1="40" y1="4" x2="40" y2="76" stroke="var(--gold3)" stroke-width=".75" opacity=".3"></line>
+        <line x1="8" y1="20" x2="72" y2="60" stroke="var(--gold3)" stroke-width=".75" opacity=".3"></line>
+        <line x1="72" y1="20" x2="8" y2="60" stroke="var(--gold3)" stroke-width=".75" opacity=".3"></line>
+        <circle cx="40" cy="40" r="3" fill="var(--gold3)" opacity=".6"></circle>
       </svg>
       <h2>No Character Selected</h2>
       <p>Create a new character or import one from a saved JSON file.</p>
@@ -668,7 +668,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
                   <option>Clank</option><option>Drakona</option><option>Dwarf</option><option>Elf</option><option>Faerie</option><option>Faun</option><option>Firbolg</option><option>Fungril</option><option>Galapa</option><option>Giant</option><option>Goblin</option><option>Halfling</option><option>Human</option><option>Infernis</option><option>Katari</option><option>Orc</option><option>Ribbet</option><option>Simiah</option><option>Mixed Ancestry</option>
                 </optgroup>
                 <optgroup label="The Void v1.5">
-                  <option>Aetheris</option><option>Earthkin</option><option>Emberkin</option><option>Gnome</option><option>Skykin</option><option>Tidekin</option>
+                  <option>Aetheris</option><option>Earthkin</option><option>Emberkin</option><option>Gnome</option><option>Skykin</option><option>Tidekin</option><option>Mixed Ancestry (Void)</option>
                 </optgroup>
               </select>
             </div>
@@ -1907,7 +1907,7 @@ adv:{
 pendingDomainPicks:[],
 // Subclass tier tracking
 subclassCards:{foundation:false, specialization:false, mastery:false},
-homebrewCards:[], homebrewArmors:[], conditions:{hidden:false,restrained:false,vulnerable:false},_levelConfirmed:false
+homebrewCards:[], homebrewArmors:[], conditions:{hidden:false,restrained:false,vulnerable:false},_levelConfirmed:false,mixedAnc1:'',mixedAnc2:'',mixedFeat1:'',mixedFeat2:'',mixedAncestry2:'',mixedFeatureChoice:''
 };}
 let chars=loadAll(), activeId=localStorage.getItem(AK)||null;
 function gA(){return chars.find(c=>c.id===activeId)||null;}
@@ -2438,28 +2438,90 @@ function bldShowHeritage(){
   bldCheckProgress();
   const cont=document.getElementById('heritagePreview');if(!cont)return;
   let html='';
-  if(c.ancestry&&ANCESTRY_DB[c.ancestry]){
-    const a=ANCESTRY_DB[c.ancestry];
-    html+=`<div class="bld-heritage-card">
-      <div class="bld-heritage-name">${c.ancestry} — Ancestry Features</div>
-      <div class="bld-heritage-desc">${a.desc}</div>
-      <div class="bld-heritage-feats">
-        ${a.feat.split(' | ').map((f,i)=>{
-          const parts=f.split(':');
-          const name=parts[0].trim();
-          const text=parts.slice(1).join(':').trim();
-          return '<div class="bld-heritage-feat"><strong>'+name+'</strong>'+(text?': '+text:'')+'</div>';
-        }).join('')}
+  const isMixed=c.ancestry==='Mixed Ancestry'||c.ancestry==='Mixed Ancestry (Void)';
+
+  if(isMixed){
+    // Non-mixed ancestry options for the two pickers
+    const ancNames=Object.keys(ANCESTRY_DB).filter(a=>!a.startsWith('Mixed'));
+    const opts1=ancNames.map(a=>`<option value="${a}"${c.mixedAnc1===a?' selected':''}>${a}</option>`).join('');
+    const opts2=ancNames.map(a=>`<option value="${a}"${c.mixedAnc2===a?' selected':''}>${a}</option>`).join('');
+
+    function featBlock(ancKey, slot, otherFeat){
+      // slot: which slot this ancestry is filling ('1' or '2')
+      // otherFeat: the feat chosen from the other ancestry ('f1' or 'f2')
+      if(!ancKey||!ANCESTRY_DB[ancKey])return'';
+      const anc=ANCESTRY_DB[ancKey];
+      const feats=anc.feat.split(' | ');
+      const f1=feats[0]||'';
+      const f2=feats[feats.length-1]||'';
+      const f1Name=f1.split(':')[0].trim();
+      const f2Name=f2.split(':')[0].trim();
+      // Current choice for this slot
+      const chosen=slot==='1'?c.mixedFeat1:c.mixedFeat2;
+      // Disable f1 if the other ancestry already took f1, disable f2 if other took f2
+      const f1Disabled=otherFeat==='f1';
+      const f2Disabled=otherFeat==='f2';
+      return `<div class="bld-heritage-feats" style="margin-top:.5rem">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:.35rem;font-style:italic">Choose one feature from ${ancKey}:</div>
+        <label class="bld-check-item${f1Disabled?' bld-mixed-disabled':''}" style="padding:.4rem .5rem;border-radius:var(--r);border:1px solid ${chosen==='f1'?'var(--gold)':'var(--border)'};background:${chosen==='f1'?'#c8a96e12':'var(--bg3)'};margin-bottom:.3rem${f1Disabled?';opacity:.35':''};cursor:${f1Disabled?'not-allowed':'pointer'}">
+          <input type="radio" name="mixedFeat${slot}" value="f1" ${chosen==='f1'?'checked':''} ${f1Disabled?'disabled':''} onchange="mixedSetFeat('${slot}','f1')">
+          <div><strong>${f1Name}</strong><div style="font-size:12px;color:var(--text3);margin-top:2px">${f1}</div></div>
+        </label>
+        <label class="bld-check-item${f2Disabled?' bld-mixed-disabled':''}" style="padding:.4rem .5rem;border-radius:var(--r);border:1px solid ${chosen==='f2'?'var(--gold)':'var(--border)'};background:${chosen==='f2'?'#c8a96e12':'var(--bg3)'};margin-bottom:.3rem${f2Disabled?';opacity:.35':''};cursor:${f2Disabled?'not-allowed':'pointer'}">
+          <input type="radio" name="mixedFeat${slot}" value="f2" ${chosen==='f2'?'checked':''} ${f2Disabled?'disabled':''} onchange="mixedSetFeat('${slot}','f2')">
+          <div><strong>${f2Name}</strong><div style="font-size:12px;color:var(--text3);margin-top:2px">${f2}</div></div>
+        </label>
+      </div>`;
+    }
+
+    html+=`<div class="bld-heritage-card" style="border-color:var(--gold3)">
+      <div class="bld-heritage-name">${c.ancestry}</div>
+      <div class="bld-heritage-desc" style="margin-bottom:.75rem">Choose two ancestries. You gain the first feature from one and the second feature from the other — you cannot take both features from the same ancestry.</div>
+      <div class="g2" style="gap:.75rem">
+        <div>
+          <label class="fl" style="margin-bottom:.3rem">First Ancestry</label>
+          <select onchange="mixedSetAnc('1',this.value)" style="width:100%">
+            <option value="">— Choose —</option>${opts1}
+          </select>
+          ${c.mixedAnc1&&ANCESTRY_DB[c.mixedAnc1]?`<div style="font-size:12px;color:var(--text3);font-style:italic;margin-top:.3rem">${ANCESTRY_DB[c.mixedAnc1].desc}</div>`:''}
+          ${featBlock(c.mixedAnc1,'1',c.mixedFeat2)}
+        </div>
+        <div>
+          <label class="fl" style="margin-bottom:.3rem">Second Ancestry</label>
+          <select onchange="mixedSetAnc('2',this.value)" style="width:100%">
+            <option value="">— Choose —</option>${opts2}
+          </select>
+          ${c.mixedAnc2&&ANCESTRY_DB[c.mixedAnc2]?`<div style="font-size:12px;color:var(--text3);font-style:italic;margin-top:.3rem">${ANCESTRY_DB[c.mixedAnc2].desc}</div>`:''}
+          ${featBlock(c.mixedAnc2,'2',c.mixedFeat1)}
+        </div>
       </div>
     </div>`;
+
+  } else {
+    if(c.ancestry&&ANCESTRY_DB[c.ancestry]){
+      const a=ANCESTRY_DB[c.ancestry];
+      html+=`<div class="bld-heritage-card">
+        <div class="bld-heritage-name">${c.ancestry} — Ancestry Features</div>
+        <div class="bld-heritage-desc">${a.desc}</div>
+        <div class="bld-heritage-feats">
+          ${a.feat.split(' | ').map(f=>{
+            const parts=f.split(':');
+            const name=parts[0].trim();
+            const text=parts.slice(1).join(':').trim();
+            return '<div class="bld-heritage-feat"><strong>'+name+'</strong>'+(text?': '+text:'')+'</div>';
+          }).join('')}
+        </div>
+      </div>`;
+    }
   }
+
   if(c.community&&COMMUNITY_DB[c.community]){
     const com=COMMUNITY_DB[c.community];
     html+=`<div class="bld-heritage-card">
       <div class="bld-heritage-name">${c.community} — Community Feature</div>
       <div class="bld-heritage-desc">${com.desc}</div>
       <div class="bld-heritage-feats">
-        ${com.feat.split(' | ').map((f,i)=>{
+        ${com.feat.split(' | ').map(f=>{
           const parts=f.split(':');
           const name=parts[0].trim();
           const text=parts.slice(1).join(':').trim();
@@ -2469,6 +2531,20 @@ function bldShowHeritage(){
     </div>`;
   }
   cont.innerHTML=html;
+}
+
+function mixedSetAnc(slot, val){
+  const c=gA();if(!c)return;
+  if(slot==='1'){c.mixedAnc1=val;c.mixedFeat1='';}
+  else{c.mixedAnc2=val;c.mixedFeat2='';}
+  dSave();bldShowHeritage();
+}
+
+function mixedSetFeat(slot, val){
+  const c=gA();if(!c)return;
+  if(slot==='1') c.mixedFeat1=val;
+  else c.mixedFeat2=val;
+  dSave();bldShowHeritage();
 }
 
 function onLvl(val){
@@ -2893,8 +2969,22 @@ function rSheet(){
           if(c.ancestry){
             const anc=ANCESTRY_DB[c.ancestry];
             if(anc){
-              out+=`<div class="st">${c.ancestry}</div><div style="font-size:13px;color:var(--text3);font-style:italic;margin-bottom:.4rem">${anc.desc}</div><div style="margin-bottom:.5rem">`;
-              anc.feat.split(' | ').forEach((feat,i)=>{
+              const isMixed=c.ancestry.startsWith('Mixed Ancestry');
+              let featsToShow=anc.feat.split(' | ');
+              if(isMixed&&c.mixedAnc1&&c.mixedAnc2&&c.mixedFeat1&&c.mixedFeat2){
+                const a1=ANCESTRY_DB[c.mixedAnc1];
+                const a2=ANCESTRY_DB[c.mixedAnc2];
+                if(a1&&a2){
+                  const f1All=a1.feat.split(' | ');
+                  const f2All=a2.feat.split(' | ');
+                  const pick1=c.mixedFeat1==='f1'?f1All[0]:f1All[f1All.length-1];
+                  const pick2=c.mixedFeat2==='f1'?f2All[0]:f2All[f2All.length-1];
+                  featsToShow=[pick1,pick2];
+                }
+              }
+              const ancLabel=isMixed&&c.mixedAnc1&&c.mixedAnc2?c.mixedAnc1+' & '+c.mixedAnc2:c.ancestry;
+              out+=`<div class="st">${ancLabel}</div><div style="font-size:13px;color:var(--text3);font-style:italic;margin-bottom:.4rem">${anc.desc}</div><div style="margin-bottom:.5rem">`;
+              featsToShow.forEach((feat,i)=>{
                 const safeId=("anc_"+c.ancestry+"_"+i).replace(/[^a-zA-Z0-9_]/g,"_");
                 const parts=feat.split(":");
                 const fname=parts[0].trim();
@@ -4467,7 +4557,7 @@ const REF_INDEX = (function(){
   // Ancestries
   Object.entries(ANCESTRY_DB).forEach(([name,d])=>{
     entries.push({
-      cat:'Ancestry', name, void:['Aetheris','Earthkin','Emberkin','Gnome','Skykin','Tidekin'].includes(name),
+      cat:'Ancestry', name, void:['Aetheris','Earthkin','Emberkin','Gnome','Skykin','Tidekin','Mixed Ancestry (Void)'].includes(name),
       meta:'Ancestry',
       body:`${d.desc}<br><br><strong>Feature:</strong> ${d.feat}`,
       tags:['ancestry','heritage']
@@ -4519,7 +4609,7 @@ const REF_INDEX = (function(){
     {
       name:'Hope & Fear',
       meta:'Core Mechanics · Resources',
-      body:`<strong>Hope</strong> is a player metacurrency with a maximum of 6. It carries over between sessions. Spent to:<br>• <strong>Help an Ally:</strong> Describe how you help and roll an advantage die; add the highest result to the acting player's total.<br>• <strong>Utilize an Experience:</strong> Add that Experience's modifier to an action or reaction roll.<br>• <strong>Initiate a Tag Team Roll:</strong> Spend 3 Hope.<br>• <strong>Activate a Hope Feature:</strong> Class Hope features cost 3 Hope to activate.<br><br><strong>Fear</strong> is the GM's metacurrency, maximum 12, carrying over between sessions. Gained when players roll with Fear. Spent to:<br>• Interrupt the players and make a GM move<br>• Use adversary or environment Fear Features<br>• Add an adversary's Experience to a roll`,
+      body:`<strong>Hope</strong> is a player metacurrency with a maximum of 6. It carries over between sessions. Spent to:<br>• <strong>Help an Ally:</strong> Describe how you help and roll an advantage die; add the highest result to the acting player's total. Multiple players can help the same PC, but only the highest advantage die result is added.<br>• <strong>Utilize an Experience:</strong> Add that Experience's modifier to an action or reaction roll. Multiple Experiences can be used by spending a Hope for each.<br>• <strong>Initiate a Tag Team Roll:</strong> Spend 3 Hope.<br>• <strong>Activate a Hope Feature:</strong> A Hope Feature is any effect that allows or requires spending Hope to activate. Class Hope features cost 3 Hope. If you rolled with Hope on that action, the Hope you gained can be spent on that feature.<br><br><strong>Fear</strong> is the GM's metacurrency, maximum 12, carrying over between sessions. Gained when players roll with Fear. Spent to:<br>• Interrupt the players and seize the spotlight to make a GM move<br>• Use adversary or environment Fear Features<br>• Add an adversary's Experience to a roll or increase the Difficulty of a roll made against them<br>• End a temporary spell effect placed by a PC (cost stated in the ability that created the effect)`,
       tags:['hope','fear','metacurrency','resources','tokens']
     },
     {
@@ -4543,7 +4633,7 @@ const REF_INDEX = (function(){
     {
       name:'Attacking',
       meta:'Core Mechanics · Combat',
-      body:`To attack, make an action roll against the target's <strong>Evasion</strong> (or Difficulty score for adversaries) as the Difficulty. The trait used is specified by the weapon or spell.<br><br><strong>On a success:</strong> Roll your damage dice (number of dice = your Proficiency) and add the flat modifier. Compare total to the target's thresholds to determine severity.<br><br><strong>On a critical success</strong> (matching Duality Dice): Roll your damage dice as normal, then add the <em>maximum possible result</em> of those dice to the total. For example, 2d8+1 deals 2d8+1+16 on a critical success.<br><br><strong>Multi-target attacks:</strong> Make one attack roll and one damage roll, applying the results to each target individually.<br><br><strong>Unarmed attacks:</strong> Use Strength or Finesse (GM's choice) and deal [Proficiency]d4 physical damage.<br><br><strong>Magic weapons</strong> require a Spellcast trait to wield.<br><br><strong>Throwing a weapon:</strong> Attack a target within Very Close range using Finesse. Once thrown, the weapon is no longer equipped.`,
+      body:`To attack, make an action roll against the target's <strong>Evasion</strong> (or Difficulty score for adversaries) as the Difficulty. The trait used is specified by the weapon or spell.<br><br><strong>On a success:</strong> Roll your damage dice (number of dice = your Proficiency) and add the flat modifier. Compare total to the target's thresholds to determine severity.<br><br><strong>On a critical success</strong> (matching Duality Dice): Roll your damage dice as normal, then add the <em>maximum possible result</em> of those dice to the total. For example, 2d8+1 deals 2d8+1+16 on a critical success.<br><br><strong>Multi-target attacks:</strong> Make one attack roll and one damage roll, applying the results to each target individually.<br><br><strong>Unarmed attacks:</strong> Use Strength or Finesse (GM's choice) and deal [Proficiency]d4 physical damage.<br><br><strong>Magic weapons</strong> require a Spellcast trait to wield.<br><br><strong>Throwing a weapon:</strong> Attack a target within Very Close range using Finesse. Once thrown, the weapon is no longer equipped.<br><br><strong>Resistance, Immunity & Direct Damage:</strong><br>• <strong>Resistance:</strong> Reduces incoming damage of that type by half before comparing to thresholds. Applied before Armor Slots.<br>• <strong>Immunity:</strong> The target ignores incoming damage of that type entirely.<br>• If an attack deals both physical and magic damage, resistance or immunity only applies if the character is resistant or immune to both types.<br>• <strong>Direct damage</strong> cannot be reduced by marking Armor Slots.`,
       tags:['attack','evasion','damage','proficiency','critical','combat','roll','unarmed','throw']
     },
     {
@@ -4567,13 +4657,13 @@ const REF_INDEX = (function(){
     {
       name:'Advantage & Disadvantage',
       meta:'Core Mechanics · Additional Rules',
-      body:`<strong>Advantage:</strong> Roll an extra d6 (the advantage die) alongside your Duality Dice and add its result to your total.<br><strong>Disadvantage:</strong> Roll an extra d6 (the disadvantage die) and subtract its result from your total.<br><br>Advantage and disadvantage dice cancel each other out one-for-one — you'll never roll both at the same time. If you have multiple sources of advantage or disadvantage from your own pool, they still only produce one extra d6. Sources from outside your pool (such as another player's Help an Ally roll) stack with your own rolled results.<br><br>When a GM <strong>helps an ally</strong>, they roll their own advantage die and the acting player adds only the highest advantage die result to their total.`,
+      body:`<strong>Advantage:</strong> Roll an extra d6 (the advantage die) alongside your Duality Dice and add its result to your total.<br><strong>Disadvantage:</strong> Roll an extra d6 (the disadvantage die) and subtract its result from your total.<br><br>Advantage and disadvantage dice cancel each other out one-for-one — you'll never roll both at the same time. If you have multiple sources of advantage or disadvantage from your own pool, they still only produce one extra d6. Sources from outside your pool (such as another player's Help an Ally roll) stack with your own rolled results.<br><br>When a <strong>PC helps an ally</strong>, they roll their own advantage die and the acting player adds only the highest advantage die result to their total.`,
       tags:['advantage','disadvantage','dice','roll','d6','bonus','help']
     },
     {
       name:'Helping & Tag Team Rolls',
       meta:'Core Mechanics · Additional Rules',
-      body:`<strong>Help an Ally:</strong> Spend a Hope to help another PC who is making an action roll. Describe how you help and roll an advantage die. The acting player adds the result to their total. Multiple players can help the same PC, but the acting player only adds the <em>highest</em> result.<br><br><strong>Tag Team Rolls:</strong> Once per session, a player can spend 3 Hope to initiate a Tag Team Roll with another PC. Both players describe how they combine their actions and both make separate action rolls. Before resolving, choose one player's roll to apply to both actions.<br>• On a roll with Hope: all PCs involved gain a Hope.<br>• On a roll with Fear: the GM gains a Fear for each PC involved.<br>• On a successful Tag Team attack: both players roll damage; add the totals together as a single source of damage.<br><br>Each player may only <em>initiate</em> one Tag Team Roll per session, but a PC can be involved in multiple Tag Team Rolls.`,
+      body:`<strong>Help an Ally:</strong> Spend a Hope to help another PC who is making an action roll. Describe how you help and roll an advantage die. The acting player adds the result to their total. Multiple players can help the same PC, but the acting player only adds the <em>highest</em> result.<br><br><strong>Tag Team Rolls:</strong> Once per session, a player can spend 3 Hope to initiate a Tag Team Roll with another PC. Both players describe how they combine their actions and both make separate action rolls. Before resolving, choose one player's roll to apply to both actions.<br>• On a roll with Hope: all PCs involved gain a Hope.<br>• On a roll with Fear: the GM gains a Fear for each PC involved.<br>• On a successful Tag Team attack: both players roll damage and add the totals together, treated as a single source of damage. If the attacks deal different types of damage, the players choose which type to deal.<br><br>Each player may only <em>initiate</em> one Tag Team Roll per session, but a PC can be involved in multiple Tag Team Rolls.`,
       tags:['help','helping','tag team','cooperate','assist','advantage','hope','spend']
     },
     {
@@ -4603,13 +4693,13 @@ const REF_INDEX = (function(){
     {
       name:'Leveling Up',
       meta:'Core Mechanics · Advancement',
-      body:`The party levels up when the GM decides a narrative milestone has been reached (roughly every 3 sessions). All party members level up simultaneously. Levels range from 1–10 across four tiers:<br><br><strong>Tier 1:</strong> Level 1 &nbsp;·&nbsp; <strong>Tier 2:</strong> Levels 2–4 &nbsp;·&nbsp; <strong>Tier 3:</strong> Levels 5–7 &nbsp;·&nbsp; <strong>Tier 4:</strong> Levels 8–10<br><br><strong>Step 1 — Tier Achievements:</strong><br>• Level 2: Gain a new Experience at +2 and permanently increase Proficiency by 1.<br>• Level 5: Gain a new Experience at +2, increase Proficiency by 1, and clear any marked character traits.<br>• Level 8: Gain a new Experience at +2, increase Proficiency by 1, and clear any marked character traits.<br><br><strong>Step 2 — Choose Two Advancements</strong> from your tier or below (options with two slots cost both slots):<br>• +1 to two unmarked character traits (marks them until next tier achievement clears them)<br>• +1 permanent HP slot<br>• +1 permanent Stress slot<br>• +1 to two Experiences<br>• Take an additional domain card at or below your level (free; also gained in Step 4)<br>• +1 permanent Evasion<br>• Take the next subclass card (Specialization or Mastery) — crosses out the multiclass option for this tier<br>• Multiclass (costs 2 slots; available from level 5)<br><br><strong>Step 3 — Damage Thresholds:</strong> Increase all damage thresholds by 1.<br><br><strong>Step 4 — Domain Card:</strong> Acquire one new domain card at your level or lower from one of your class's domains. You may also exchange one previously acquired card for a different one of the same level or lower.`,
+      body:`The party levels up when the GM decides a narrative milestone has been reached (roughly every 3 sessions). All party members level up simultaneously. Levels range from 1–10 across four tiers:<br><br><strong>Tier 1:</strong> Level 1 &nbsp;·&nbsp; <strong>Tier 2:</strong> Levels 2–4 &nbsp;·&nbsp; <strong>Tier 3:</strong> Levels 5–7 &nbsp;·&nbsp; <strong>Tier 4:</strong> Levels 8–10<br><br><strong>Step 1 — Tier Achievements:</strong><br>• Level 2: Gain a new Experience at +2 and permanently increase Proficiency by 1.<br>• Level 5: Gain a new Experience at +2, increase Proficiency by 1, and clear any marked character traits.<br>• Level 8: Gain a new Experience at +2, increase Proficiency by 1, and clear any marked character traits.<br><br><strong>Step 2 — Choose Two Advancements</strong> from your tier or below (options with two slots cost both slots):<br>• +1 to two unmarked character traits (marks them until next tier achievement clears them)<br>• +1 permanent HP slot<br>• +1 permanent Stress slot<br>• +1 to two Experiences<br>• Take an additional domain card at or below your level from your class's domains; if you've multiclassed, you can instead select from your multiclass domain at or below half your level<br>• +1 permanent Evasion<br>• Take the next subclass card (Specialization or Mastery) — crosses out the multiclass option for this tier<br>• Multiclass (costs 2 slots; available from level 5)<br><br><strong>Step 3 — Damage Thresholds:</strong> Increase all damage thresholds by 1.<br><br><strong>Step 4 — Domain Card:</strong> Acquire one new domain card at your level or lower from one of your class's domains. You may also exchange one previously acquired card for a different one of the same level or lower.`,
       tags:['level up','advancement','tier','proficiency','xp','progression','subclass','domain card','experience','trait']
     },
     {
       name:'Multiclassing',
       meta:'Core Mechanics · Advancement',
-      body:`Characters can multiclass starting at <strong>Level 5</strong>. Multiclassing costs <strong>2 advancement slots</strong> and crosses out the "upgraded subclass card" advancement option in that tier and all other multiclass options on the sheet.<br><br><strong>When you multiclass:</strong><br>• Choose an additional class.<br>• Select <strong>one</strong> of its domains — you gain access to domain cards from that domain going forward (at up to half your level, rounded up).<br>• Gain that class's <strong>class feature</strong>.<br>• Take the foundation card from one of its subclasses.<br>• If your foundation cards specify different Spellcast traits, you choose which to apply when making a Spellcast roll.<br><br>You can only multiclass once.`,
+      body:`Characters can multiclass starting at <strong>Level 5</strong>. Multiclassing costs <strong>2 advancement slots</strong>. Taking it crosses out the <em>upgraded subclass card</em> advancement option for that tier and all other <em>multiclass</em> advancement options on the sheet — you can only multiclass once.<br><br><strong>When you multiclass:</strong><br>• Choose an additional class.<br>• Select <strong>one</strong> of its domains — you gain access to domain cards from that domain going forward (at up to half your level, rounded up).<br>• Gain that class's <strong>class feature</strong>.<br>• Take the foundation card from one of its subclasses.<br>• If your foundation cards specify different Spellcast traits, you choose which to apply when making a Spellcast roll.<br><br>You can only multiclass once.`,
       tags:['multiclass','multiclassing','second class','domains','level 5','advancement','class feature']
     },
     {
@@ -4633,7 +4723,7 @@ const REF_INDEX = (function(){
     {
       name:'Armor (Rules)',
       meta:'Core Mechanics · Equipment',
-      body:`Each armor piece has: <strong>Base Thresholds</strong> (Major/Severe), a <strong>Base Armor Score</strong> (number of slots), and optionally a <strong>feature</strong> and an Evasion modifier.<br><br><strong>Effective thresholds</strong> = Armor's base thresholds + your current level. For example, Leather Armor (base 6/13) worn at level 3 gives thresholds of 9/16.<br><br><strong>While unarmored:</strong> Base Armor Score is 0, Major threshold = your level, Severe threshold = your level × 2.<br><br><strong>Armor Slots:</strong> When you take damage, you may mark one Armor Slot to reduce the severity by one threshold step (Severe → Major, Major → Minor, Minor → None). If your Armor Score is 0, you cannot mark Armor Slots. Your total Armor Score cannot exceed 12.<br><br>Armor Slots are cleared during downtime (Repair Armor move).`,
+      body:`Each armor piece has: <strong>Base Thresholds</strong> (Major/Severe), a <strong>Base Armor Score</strong> (number of slots), and optionally a <strong>feature</strong> and an Evasion modifier.<br><br><strong>Effective thresholds</strong> = Armor's base thresholds + your current level. For example, Leather Armor (base 6/13) worn at level 3 gives thresholds of 9/16.<br><br><strong>While unarmored:</strong> Base Armor Score is 0, Major threshold = your level, Severe threshold = your level × 2.<br><br><strong>Armor Slots:</strong> When you take damage, you may mark one Armor Slot to reduce the severity by one threshold step (Severe → Major, Major → Minor, Minor → None). If your Armor Score is 0, you cannot mark Armor Slots. Your total Armor Score cannot exceed 12.<br><br>Armor Slots are cleared during downtime (Repair Armor move). If you unequip your armor, track how many of its Armor Slots are marked — they carry over when you re-equip it.`,
       tags:['armor','threshold','armor score','slots','evasion','defense','damage reduction','major','severe','level']
     },
     {
@@ -4652,6 +4742,100 @@ const REF_INDEX = (function(){
 
   RULES.forEach(r=>{
     entries.push({cat:'Rule', name:r.name, void:false, meta:r.meta, body:r.body, tags:['rule','rules','mechanics',...r.tags]});
+  });
+
+  // Glossary
+  const GLOSSARY = [
+    {name:'Action Roll', body:"Any move that is difficult to accomplish or risky to attempt triggers an action roll. Moves where success would be trivial or failure would be boring automatically succeed."},
+    {name:'Advantage', body:"An opportunity that increases your chances of success. Roll a d6 advantage die alongside your Duality Dice and add its result to your total."},
+    {name:'Agility', body:"A high Agility means you are fast on your feet, nimble on difficult terrain, and quick to react to danger. Used to Sprint, Leap, Maneuver, and similar actions."},
+    {name:'Ancestry',            body:"A character's ancestry reflects their lineage, impacting their physicality and granting two unique ancestry features."},
+    {name:'Area of Effect',      body:"Unless stated otherwise, all targets of a group effect must be within Very Close range of a single origin point within your effect's range."},
+    {name:'Attack Roll',         body:"An action roll intended to inflict harm. The trait used is specified by the weapon or spell. Unarmed attack rolls use Strength or Finesse (GM's choice). The Difficulty is equal to the target's Difficulty score unless otherwise noted."},
+    {name:'Avoid Death', body:"A death move: your character temporarily drops unconscious and you work with the GM to describe how the situation worsens. They return to consciousness when an ally clears 1 or more of their Hit Points or when the party finishes a long rest."},
+    {name:'Background',          body:"Your background has no explicit mechanical effect, but greatly shapes the character you'll play and informs the GM's prep."},
+    {name:'Bag of Gold', body:"Equal to 10 handfuls of gold."},
+    {name:'Base Armor Score',    body:"An armor's base armor score indicates how many Armor Slots it provides before additional bonuses are added. A PC's total Armor Score cannot exceed 12."},
+    {name:'Base Thresholds',     body:"An armor's base thresholds determine the wearer's Major and Severe damage thresholds before adding bonuses (such as level) to calculate final thresholds."},
+    {name:'Blaze of Glory', body:"A death move: your character embraces death and goes out in a blaze of glory. Take one final action — it automatically critically succeeds (with GM approval) — then cross through the veil of death."},
+    {name:'Burden',              body:"A weapon's burden indicates how many hands it occupies when equipped. Your maximum burden is 2 hands."},
+    {name:'Category (Weapon)', body:"Specifies whether a weapon is a Primary or Secondary weapon."},
+    {name:'Character Trait',     body:"A character's physical, mental, and social aptitude. Includes Agility, Strength, Finesse, Instinct, Presence, and Knowledge."},
+    {name:'Chest of Gold', body:"Equal to 10 bags of gold. The maximum amount of gold a character can hold."},
+    {name:'Class', body:"Role-based archetypes that determine which class features and domain cards a PC gains access to throughout the campaign."},
+    {name:'Community',           body:"Your character's community represents their culture or environment of origin and grants a community feature."},
+    {name:'Connection', body:"A relationship between PCs, developed through play."},
+    {name:'Consumable', body:"Loot that can only be used once. You can hold up to five of each consumable at a time."},
+    {name:'Critical Success', body:"If the Duality Dice show matching results, you automatically succeed with a bonus, gain a Hope, and clear a Stress. On an attack roll, you deal critical damage."},
+    {name:'Critical Damage', body:"On a critical success attack roll, make the damage roll as normal then add the maximum possible result of the damage dice to the total. For example, 2d8+1 deals 2d8+1+16 on a critical success."},
+    {name:'Damage', body:"Indicates the size of damage dice rolled on a successful attack. You roll a number of dice equal to your Proficiency. Flat modifiers are added to the total but are not affected by Proficiency."},
+    {name:'Damage Type', body:"Indicates whether a weapon deals physical or magic damage. Weapons that deal magic damage can only be wielded by characters with a Spellcast trait."},
+    {name:'Difficulty', body:"The target number for an action roll. Some actions state their Difficulty; otherwise the GM determines it. The GM can choose whether to share it with the table but should always communicate potential consequences of failure."},
+    {name:'Direct Damage', body:"Damage that cannot be reduced by marking Armor Slots."},
+    {name:'Disadvantage', body:"An additional challenge when attempting an action. Roll a d6 disadvantage die alongside your Duality Dice and subtract its result from your total."},
+    {name:'Duality Dice', body:"A pair of d12s used for all action rolls — two visually distinct dice, one representing Hope and one representing Fear."},
+    {name:'Evasion',             body:"Represents a character's ability to avoid attacks and unwanted effects. Any roll made against a PC uses their Evasion as the Difficulty. Base Evasion is set by class and can be modified by equipment, conditions, and abilities."},
+    {name:'Experience',          body:"A word or phrase encapsulating a specific set of skills, traits, or aptitudes a character has acquired. Spend a Hope to add a relevant Experience's modifier to an action or reaction roll."},
+    {name:'Failure with Fear', body:"Total is below the Difficulty AND the Fear Die is higher than the Hope Die. You fail with a major consequence; the GM gains a Fear and seizes the spotlight."},
+    {name:'Failure with Hope', body:"Total is below the Difficulty AND the Hope Die is higher than the Fear Die. You fail with a minor consequence but gain a Hope; the spotlight goes to the GM."},
+    {name:'Far', body:"About 30–100 feet away. Moving from Far into Melee range while in danger requires an Agility Roll. On a map: length of the long edge of a piece of copy paper (11–12 inches); optional rule: 12 squares."},
+    {name:'Fear', body:"A GM metacurrency representing cosmic forces that shape the story. Powers GM and adversary abilities and features. Maximum 12; carries over between sessions."},
+    {name:'Fear Features', body:"Especially powerful or consequential moves that the GM must spend Fear to activate. Present on many adversaries and environments."},
+    {name:'Feature (Weapon)', body:"A special rule tied to a weapon that stays in effect while the weapon is equipped."},
+    {name:'Feature (Armor)', body:"A special rule tied to armor that stays in effect while the armor is equipped."},
+    {name:'Finesse', body:"A high Finesse means you are skilled at tasks requiring accuracy, stealth, or precise control. Used to Control, Hide, Tinker, and similar actions."},
+    {name:'Gold Coin', body:"An optional denomination: 10 gold coins make up 1 handful of gold."},
+    {name:'Group Action Roll', body:"When multiple PCs act together, one leads with a standard action roll while the others make reaction rolls. The leader gains +1 per succeeded reaction roll and −1 per failed one."},
+    {name:'Handful of Gold', body:"Approximately equal to 10 gold coins. The smallest denomination of wealth tracking."},
+    {name:'Hidden',              body:"While out of sight from all enemies and they don't know your location, you are Hidden. Rolls against a Hidden creature have disadvantage. You lose Hidden when an adversary moves to where they would see you, you move into their line of sight, or you make an attack."},
+    {name:'Hit Points',          body:"A character's ability to withstand physical injury. When taking damage, mark 1–3 HP based on damage thresholds. When a PC marks their last Hit Point, they fall and must make a death move. Maximum is 12."},
+    {name:'Hope', body:"A player metacurrency representing cosmic forces. Powers PC abilities and features. Maximum 6; carries over between sessions. Gained by rolling with Hope or on a Critical Success."},
+    {name:'Immunity', body:"A target with immunity to a damage type ignores incoming damage of that type. If an attack deals both damage types, immunity only applies if the character is immune to both."},
+    {name:'Incoming Damage', body:"The total damage from a single attack or source, before Armor Slots are marked."},
+    {name:'Instinct', body:"A high Instinct means you have a keen sense of your surroundings and a natural intuition. Used to Perceive, Sense, Navigate, and similar actions."},
+    {name:'Knowledge',           body:"A high Knowledge means you know information others don't and can apply deduction and inference. Used to Recall, Analyze, Comprehend, and similar actions."},
+    {name:'Line of Sight', body:"A ranged attacker must have line of sight to make an attack roll unless otherwise stated. Partial obstruction gives the target cover, imposing disadvantage on the attack. Total obstruction means no line of sight."},
+    {name:'Long Rest', body:"A rest lasting several in-game hours. Each PC moves domain cards freely and chooses two downtime moves. At the end, all per-rest abilities refresh and the GM gains Fear equal to 1d4 + number of PCs."},
+    {name:'Major', body:"A damage threshold. If final damage is at or above the Major threshold but below Severe, the target marks 2 HP. If below the Major threshold, they mark 1 HP."},
+    {name:'Massive Damage', body:"Optional rule: if a character takes damage equal to twice their Severe threshold, they mark 4 HP instead of 3."},
+    {name:'Melee', body:"Close enough to touch, up to a few feet away. Optional rule: 1 square."},
+    {name:'Multiclassing', body:"Starting at Level 5, you can multiclass as an advancement option (costs 2 slots). Choose an additional class, gain access to one of its domains, and acquire its class feature."},
+    {name:'Ongoing Spell Effects', body:"If an effect has no listed mechanical expiration, it only ends when decided by the controlling player, the GM, or the demands of the fiction."},
+    {name:'Out of Range',        body:"Anything beyond a character's Very Far range is Out of Range and usually cannot be targeted. Optional rule: off the battlemap."},
+    {name:'Prepare', body:"A downtime move: describe how you prepare for the path ahead and gain a Hope. If preparing with one or more party members, each of you gains 2 Hope instead."},
+    {name:'Presence', body:"A high Presence means you have a strong force of personality and a facility for social situations. Used to Charm, Perform, Deceive, and similar actions."},
+    {name:'Proficiency', body:"At Level 1, Proficiency is 1. For each weapon attack, roll one damage die per Proficiency. Proficiency multiplies the number of dice but does not affect flat modifiers."},
+    {name:'Range', body:"The maximum distance between attacker and target when attacking with a weapon. Effects can be used at closer distances than their stated range unless otherwise noted."},
+    {name:'Reaction Roll', body:"Made in response to an attack or hazard. Works like an action roll but does not generate Hope or Fear, does not trigger GM moves, and cannot benefit from Help an Ally."},
+    {name:'Resistance', body:"Reduces incoming damage of that type by half before comparing to thresholds. Applied before Armor Slots. Multiple resistances to the same damage type do not stack."},
+    {name:'Restrained', body:"Restrained characters cannot move from their current position but can still take actions."},
+    {name:'Risk It All', body:"A death move: roll your Duality Dice. If the Hope Die is higher, stay on your feet and clear HP or Stress equal to the Hope Die value. If the Fear Die is higher, cross through the veil of death. If both dice match, stay up and clear all HP and Stress."},
+    {name:'Severe', body:"A damage threshold. If final damage is at or above the Severe threshold, the target marks 3 HP."},
+    {name:'Short Rest', body:"A rest lasting about an hour. Each PC moves domain cards freely and chooses two downtime moves. At the end, per-rest abilities refresh and the GM gains 1d4 Fear."},
+    {name:'Simultaneous Effects', body:"If the resolution order of multiple effects is unclear, the person in control of the effects decides what order to resolve them in."},
+    {name:'Special Condition', body:"Only cleared when specific requirements are met, such as completing a certain action or using a particular item. Requirements are stated in the effect that applied the condition."},
+    {name:'Spellcast Roll', body:"A trait roll that uses your Spellcast trait, which is determined by your subclass. Only made when a feature specifically calls for one."},
+    {name:'Spending Resources', body:"Unless an effect states otherwise, you cannot spend Hope or mark Stress multiple times on the same feature to increase or repeat its effects on the same roll."},
+    {name:'Spotlight',           body:"Represents the table's attention — the immediate narrative and mechanical focus. Any time a character becomes the focus of a scene, they 'have the spotlight.'"},
+    {name:'Stacking Effects', body:"Unless stated otherwise, all effects except conditions and advantage/disadvantage can stack."},
+    {name:'Strength', body:"A high Strength means you excel at feats that test physical prowess and stamina. Used to Lift, Smash, Grapple, and similar actions."},
+    {name:'Stress', body:"Represents mental, physical, and emotional strain. Some abilities require marking Stress; the GM can also require it as a move consequence. When all Stress is marked, you become Vulnerable until at least 1 is cleared."},
+    {name:'Subclass', body:"Further refines a class archetype by granting unique subclass features. Each class has two subclasses. Select one and take its Foundation card."},
+    {name:'Success with Fear', body:"Total meets or beats the Difficulty AND the Fear Die is higher than the Hope Die. You succeed with a cost or complication; the GM gains a Fear."},
+    {name:'Success with Hope', body:"Total meets or beats the Difficulty AND the Hope Die is higher than the Fear Die. You succeed and gain a Hope."},
+    {name:'Tag Team Rolls', body:"Once per session, spend 3 Hope to initiate a Tag Team Roll with another PC. Both players describe how they combine actions and each makes a separate roll; choose one set of results to apply to both."},
+    {name:'Temporary Condition', body:"A condition that the affected creature can clear by making a successful action roll against it. Adversaries clear temporary conditions by using their spotlight without requiring a roll."},
+    {name:'Tier Achievements', body:"Benefits gained at specific levels: Level 2 (new Experience at +2, +1 Proficiency), Level 5 (same, plus clear marked traits), Level 8 (same as Level 5)."},
+    {name:'Trait Roll', body:"An action roll that specifies which character trait applies. Referenced in the format \'[Trait] Roll (Difficulty)\' — e.g., \'Agility Roll (12)\'. If no Difficulty is stated, the GM sets it."},
+    {name:'Unarmored', body:"While unarmored, base Armor Score is 0, Major threshold equals your level, and Severe threshold equals twice your level."},
+    {name:'Very Close', body:"About 5–10 feet away. A character can move from Very Close into Melee range as part of their action while in danger. On a map: shortest length of a game card (2–3 inches); optional rule: 3 squares."},
+    {name:'Very Far', body:"About 100–300 feet away — too far to make out details. Moving from Very Far into Melee range while in danger requires an Agility Roll. Optional rule: 13+ squares."},
+    {name:'Vulnerable', body:"All rolls targeting a Vulnerable creature have advantage."},
+    {name:'Weapon', body:"All weapons have a tier, trait, range, damage die, damage type, and burden. Some also have a feature."},
+    {name:'Work on a Project', body:"A long rest downtime move: with GM approval, pursue a long-term project such as crafting a weapon or deciphering a text. Assign it a countdown and advance it each time the move is taken."},
+  ];
+  GLOSSARY.forEach(g=>{
+    entries.push({cat:'Glossary', name:g.name, void:false, meta:'Glossary · Term Definition', body:g.body, tags:['glossary','term','definition',g.name.toLowerCase()]});
   });
 
 
@@ -4799,13 +4983,13 @@ const REF_INDEX = (function(){
   return entries;
 })();
 
-const REF_CATS = ['All','Adversary','Ancestry','Armor','Class','Community','Consumable','Domain Card','Item','Rule','Subclass','Weapon'];
+const REF_CATS = ['All','Adversary','Ancestry','Armor','Class','Community','Consumable','Domain Card','Glossary','Item','Rule','Subclass','Weapon'];
 const CAT_COLORS = {
   'Rule':'#e8c060',
   'Class':'#c8a96e','Subclass':'#a870d8','Domain Card':'#6080c8',
   'Armor':'#4a9e8a','Weapon':'#d85a30','Item':'#60a860',
   'Consumable':'#d4603a','Ancestry':'#d88060','Community':'#8060c0',
-  'Adversary':'#c05050'
+  'Adversary':'#c05050','Glossary':'#5090d8'
 };
 
 let refQuery='', refCat='All', refOpenId=null;
